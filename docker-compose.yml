@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  mysqldb:
+    image: mysql:5.7
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=RootPassword
+      - MYSQL_DATABASE=PrismaTest
+      - MYSQL_USER=MainUser
+      - MYSQL_PASSWORD=MainPassword
+    ports:
+      - 3306:3306
+    volumes:
+      - db:/var/run/mysqld
+  app:
+    depends_on:
+      - mysqldb
+    build: .
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - 8765:8765
+    stdin_open: true
+    tty: true
+    volumes:
+      - db:/usr/src/prisapp
+
+volumes: 
+  db:
